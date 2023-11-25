@@ -1,14 +1,12 @@
 import { Request, Response } from 'express';
 
-import PublisherModel from '../models/publishers.model';
-import { Publisher } from '../types/publisher';
+import PublisherService from '../services/publishers.service';
 
 class PublisherController {
-	async getPublisher(req: Request, res: Response) {
+	async getPublishers(req: Request, res: Response) {
 		try {
-			const publisher = new PublisherModel();
-
-			const publishers: Publisher[] = await publisher.getPublishers();
+			const publisherService = new PublisherService();
+			const publishers = await publisherService.getAllPublishers();
 
 			res.status(200).send({ publishers });
 		} catch (error) {
