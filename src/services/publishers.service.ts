@@ -2,10 +2,10 @@ import PublisherModel from '../models/publishers.model';
 import { Publisher } from '../types/publisher';
 
 class PublisherService {
-	private publisher = new PublisherModel();
+	private publisherModel = new PublisherModel();
 
 	async getAllPublishers() {
-		const publishers: Publisher[] = await this.publisher.getPublishers();
+		const publishers: Publisher[] = await this.publisherModel.getPublishers();
 
 		return publishers;
 	}
