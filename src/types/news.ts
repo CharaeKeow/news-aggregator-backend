@@ -7,3 +7,10 @@ export type News = {
 	guid?: string; // optional, since only use during insert
 	publisher: string;
 };
+
+export enum LanguageCode {
+	English = 'en',
+	BahasaMelayu = 'ms',
+}
+
+export type languageCodeUnion = `${LanguageCode}`;

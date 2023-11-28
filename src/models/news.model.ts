@@ -1,10 +1,10 @@
 import knex from '../../database/connection';
-import { News } from '../types/news';
+import { languageCodeUnion, News } from '../types/news';
 
 const DEFAULT_LIMIT = 50;
 
 class NewsModel {
-	async getNews(limit = DEFAULT_LIMIT) {
+	async getNews(languageCode: languageCodeUnion, limit = DEFAULT_LIMIT) {
 		return knex
 			.select(
 				'n.id',
@@ -16,6 +16,8 @@ class NewsModel {
 			)
 			.from('news as n')
 			.innerJoin('publisher as p', 'p.id', 'n.publisher_id')
+			.innerJoin('language as l', 'l.id', 'p.language_id')
+			.where('l.language_code', languageCode)
 			.orderBy('pub_date', 'desc')
 			.limit(limit);
 	}

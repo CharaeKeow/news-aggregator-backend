@@ -3,15 +3,18 @@ import { load } from 'cheerio';
 
 import NewsModel from '../models/news.model';
 import PublisherModel from '../models/publishers.model';
-import { News } from '../types/news';
+import { languageCodeUnion, News } from '../types/news';
 import { Publisher, PublisherName } from '../types/publisher';
+
+const PLACEHOLDER_IMG_LINK =
+	'https://luminews.my/_next/static/media/logo-black.411b1fed.png/?w=128&q=75';
 
 class NewsService {
 	private newsModel = new NewsModel();
 	private publisherModel = new PublisherModel();
 
-	async getNews() {
-		const news: News[] = await this.newsModel.getNews();
+	async getNews(languageCode: languageCodeUnion) {
+		const news: News[] = await this.newsModel.getNews(languageCode);
 
 		return news;
 	}
@@ -61,7 +64,7 @@ class NewsService {
 				// push the rss items to rssNews array
 				rssNews.push({
 					title: item.title?.trim() as string,
-					imageUrl: imageUrl,
+					imageUrl: imageUrl || PLACEHOLDER_IMG_LINK,
 					link: item.link as string,
 					pubDate: new Date(item.isoDate as string),
 					guid: item.guid as string,
