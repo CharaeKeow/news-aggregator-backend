@@ -29,6 +29,10 @@ npm run seed
 npm run dev
 ```
 
+## Database ERD
+
+![Database ERD](sample/database-erd.png)
+
 ## Endpoints
 
 1.`http://localhost:8000/api/publishers` - Returns a list of all publishers saved in database.
