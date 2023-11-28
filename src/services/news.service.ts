@@ -19,7 +19,6 @@ class NewsService {
 		return news;
 	}
 
-	// TODO: Think if it's better to put it inside its own `rss-parser.service.ts` file
 	async crawlArticles() {
 		const parser = new Parser({
 			headers: {
@@ -37,29 +36,28 @@ class NewsService {
 
 		// iterate thru the list and parse the rss feed
 		for (const publisher of publishers) {
+			const rssNews = await this.processRssFeed(parser, publisher);
+
+			// only save if there are rss news
+			if (rssNews.length > 0) {
+				await this.newsModel.saveNews(rssNews);
+				console.log(`${rssNews.length} news processed for ${publisher.name}.`);
+			}
+		}
+	}
+
+	// utils. Keep here instead of into `../utils` folder since it's not reused elsewhere
+	/**
+	 * Util function to crawl, process rss feed, and return the articles. If there is error, print the error
+	 */
+	private async processRssFeed(parser: Parser, publisher: Publisher) {
+		try {
 			const feed = await parser.parseURL(publisher.feedUrl);
 
 			const rssNews: News[] = [];
 
-			// feed.items.forEach((item) => {
 			for (const item of feed.items) {
-				let imageUrl = null;
-
-				if (publisher.name === PublisherName.UtusanMalaysia) {
-					// if utusan, extract image from content
-					const content = item.content;
-
-					if (content) {
-						const $ = load(content); // load the HTML in content using Cheerio library
-
-						// grab the first img tag in content, and get the src attribute value
-						const imgElement = $('img').first();
-						imageUrl = imgElement.attr('src');
-					}
-				} else if (publisher.name === PublisherName.Says) {
-					// if SAYS, extract from custom field mediaContent
-					imageUrl = item.mediaContent?.['$'].url;
-				}
+				let imageUrl = this.extractImageUrl(item, publisher);
 
 				// push the rss items to rssNews array
 				rssNews.push({
@@ -72,11 +70,38 @@ class NewsService {
 				});
 			}
 
-			// save the news
-			await this.newsModel.saveNews(rssNews);
-
-			console.log(`${rssNews.length} news processed.`);
+			return rssNews;
+		} catch (error) {
+			console.error(`Error processing ${publisher.name} rss feed.`, error);
+			return [];
 		}
+	}
+
+	/**
+	 * Util function to extract image url from article item. Return null if there is no image found.
+	 */
+	private extractImageUrl(item: any, publisher: Publisher) {
+		let imageUrl = null;
+
+		// if utusan, extract image from content
+		if (publisher.name === PublisherName.UtusanMalaysia) {
+			const content = item.content;
+
+			if (content) {
+				const $ = load(content); // load the HTML in content using Cheerio library
+
+				// grab the first img tag in content, and get the src attribute value
+				const imgElement = $('img').first();
+				imageUrl = imgElement.attr('src');
+			}
+		} else if (publisher.name === PublisherName.Says) {
+			// if SAYS, extract from custom field mediaContent
+			imageUrl = item.mediaContent?.['$'].url;
+		}
+
+		// ? No Berita Harian here because Berita Harian rss feed doesn't contain any image
+
+		return imageUrl;
 	}
 }
 
