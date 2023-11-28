@@ -4,8 +4,6 @@ type KnexConfig = {
 	[key: string]: object;
 };
 
-// TODO: Create development & production one, by reading the option from .env
-// TODO: Read db connection info from .env instead of declaring directly here, for usability and pushing to GH
 const config: KnexConfig = {
 	development: {
 		client: 'pg',
