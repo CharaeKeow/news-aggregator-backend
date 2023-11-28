@@ -6,6 +6,6 @@ const router = Router();
 
 // get all news sorted by time descending
 router.get('/', NewsController.getNews);
-router.get('/parse-rss-news', NewsController.parseRssNews);
+router.get('/crawl-articles', NewsController.crawlArticles);
 
 export default router;

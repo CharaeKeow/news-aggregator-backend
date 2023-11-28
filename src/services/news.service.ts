@@ -20,7 +20,7 @@ class NewsService {
 	}
 
 	// TODO: Think if it's better to put it inside its own `rss-parser.service.ts` file
-	async parseRssNews() {
+	async crawlArticles() {
 		const parser = new Parser({
 			headers: {
 				'User-Agent':

@@ -29,11 +29,11 @@ class NewsController {
 		}
 	}
 
-	async parseRssNews(req: Request, res: Response) {
+	async crawlArticles(req: Request, res: Response) {
 		try {
 			const newsService = new NewsService();
 			// const
-			await newsService.parseRssNews();
+			await newsService.crawlArticles();
 
 			res.status(200).send();
 		} catch (error) {
