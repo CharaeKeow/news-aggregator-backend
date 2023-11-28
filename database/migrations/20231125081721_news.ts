@@ -6,7 +6,7 @@ export async function up(knex: Knex): Promise<void> {
 		table.string('title').notNullable();
 		table.text('image_url');
 		table.text('link');
-		table.timestamp('pubDate');
+		table.timestamp('pub_date');
 		table.string('guid').notNullable();
 		table.integer('publisher_id').notNullable();
 		table.timestamp('created_at').defaultTo(knex.fn.now());

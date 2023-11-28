@@ -1,9 +1,11 @@
-import express from 'express';
+import { Router } from 'express';
 
-import { getNews } from '../controllers/news.controller';
+import NewsController from '../controllers/news.controller';
 
-const router = express.Router();
+const router = Router();
 
-router.get('/news', getNews);
+// get all news sorted by time descending
+router.get('/', NewsController.getNews);
+router.get('/crawl-articles', NewsController.crawlArticles);
 
 export default router;
